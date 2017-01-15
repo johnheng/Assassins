@@ -1,0 +1,27 @@
+﻿@{
+    ViewBag.Title = "FAQs";
+}
+<h2>@ViewBag.Title.</h2>
+<h3>@ViewBag.Message</h3>
+
+<style>
+    .faq dt, dd{
+        padding-bottom:7px;
+        line-height:1;
+    }
+</style>
+<div class="col-md-12" style="width:100%">
+    <dl class="dl-horizontal faq">
+        <dt>How do I see who my target is?</dt>
+        <dd>Click on the <span class="fa fa-user"></span> next to your name in the navigation bar. A profile window should pop up with your target.</dd>
+
+        <dt>Why is my "Confirm a Kill" button disabled?</dt>
+        <dd>Possible reasons are that the current game has not started yet or is paused. Another reason is that your target is yourself (and you obviously can't kill yourself).</dd>
+
+        <dt>What if my current target is in my family?</dt>
+        <dd>You can kill your own family members but it won't count towards your family's total kills at the end. Use this functionality to make kills that your family member wouldn't be able to.</dd>
+
+        <dt>Why does this one part look different on mobile?</dt>
+        <dd>The web application was developed with a desktop-first approach so not all components may look the same on mobile.</dd>
+    </dl>
+</div>

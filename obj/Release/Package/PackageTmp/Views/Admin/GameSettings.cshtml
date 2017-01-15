@@ -1,0 +1,41 @@
+﻿@using Assassins.Models;
+@using Assassins.Controllers;
+@using Microsoft.AspNet.Identity
+@using System.Data.Entity
+@using Microsoft.AspNet.Identity.EntityFramework
+@using Assassins.Logic
+
+@Styles.Render("~/Content/jumbotron-narrow.css")
+
+@{
+    if (Request.IsAuthenticated)
+    {
+        @Html.AntiForgeryToken()
+        ViewBag.Title = "Game Settings";
+        var currentUserId = User.Identity.GetUserId();
+        var manager = new UserManager<Assassins.Models.ApplicationUser>(new UserStore<Assassins.Models.ApplicationUser>(new Assassins.Models.ApplicationDbContext()));
+        var currentUser = manager.FindById(currentUserId);
+
+        if (!currentUser.Admin)
+        {
+            <script>
+                window.location.href = "@Url.Action("Index", "Home")";
+            </script>
+        }
+    }
+    else
+    {
+        <script>
+            window.location.href = "@Url.Action("Index", "Home")";
+        </script>
+    }
+}
+
+<div class="jumbotron">
+    <h1>@ViewBag.Title</h1>
+    <div>
+        @Html.ActionLink("Manage", "ManageGames", "Admin", routeValues: null, htmlAttributes: new { @class = "btn btn-lg btn-success", @role = "button" })
+        @Html.ActionLink("Start", "StartGame", "Admin", routeValues: null, htmlAttributes: new { @class = "btn btn-lg btn-success", @role = "button" })
+        @Html.ActionLink("Create", "#", "Admin", routeValues: null, htmlAttributes: new { @class = "btn btn-lg btn-success", @role = "button" })
+    </div>
+</div>

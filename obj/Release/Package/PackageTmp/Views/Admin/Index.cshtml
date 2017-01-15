@@ -1,0 +1,77 @@
+﻿@using Assassins.Models;
+@using Assassins.Controllers;
+@using Microsoft.AspNet.Identity
+@using System.Data.Entity
+@using Microsoft.AspNet.Identity.EntityFramework
+@using Assassins.Logic
+
+@Styles.Render("~/Content/jumbotron-narrow.css")
+
+@{
+    if (Request.IsAuthenticated)
+    {
+        @Html.AntiForgeryToken()
+        ViewBag.Title = "Admin Page";
+        var currentUserId = User.Identity.GetUserId();
+        var manager = new UserManager<Assassins.Models.ApplicationUser>(new UserStore<Assassins.Models.ApplicationUser>(new Assassins.Models.ApplicationDbContext()));
+        var currentUser = manager.FindById(currentUserId);
+
+        if (!currentUser.Admin)
+        {
+            <script>
+                window.location.href = "@Url.Action("Index", "Home")";
+            </script>
+        }
+    }
+    else
+    {
+        <script>
+            window.location.href = "@Url.Action("Index", "Home")";
+        </script>
+    }
+}
+
+<p class="text-success">@ViewBag.StatusMessage</p>
+
+<div class="jumbotron" style="padding-top: 30px; padding-bottom: 30px">
+    <h1>@ViewBag.Title</h1>
+    <p class="lead">You can do administrative stuff here.</p>
+
+    <div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    @Html.ActionLink("User Details", "UserDetails", "Admin", routeValues: null, htmlAttributes: new { @class = "btn btn-success btn-sm", @role = "button", @style = "margin-top:3px; margin-bottom:3px;" })
+                    @Html.ActionLink("Event Details", "EventDetails", "Admin", routeValues: null, htmlAttributes: new { @class = "btn btn-success btn-sm", @role = "button", @style = "margin-top:3px; margin-bottom:3px;" })
+                    @Html.ActionLink("Game Settings", "ManageGames", "Admin", routeValues: null, htmlAttributes: new { @class = "btn btn-success btn-sm", @role = "button", @style = "margin-top:3px; margin-bottom:3px;" })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row marketing" style="margin-top: 25px; margin-bottom: 20px">
+    <div class="col-lg-6">
+        <h4>Subheading</h4>
+        <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
+
+        <h4>Subheading</h4>
+        <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
+
+        <h4>Subheading</h4>
+        <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+    </div>
+
+    <div class="col-lg-6">
+        <h4>Subheading</h4>
+        <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
+
+        <h4>Subheading</h4>
+        <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
+
+        <h4>Subheading</h4>
+        <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+    </div>
+</div>
+
+

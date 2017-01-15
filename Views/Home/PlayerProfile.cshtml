@@ -1,0 +1,214 @@
+﻿@using Assassins.Logic
+@using System.Web;
+@model Assassins.Models.AspNetUser
+
+@{
+    ViewBag.Title = Model.Name;
+    LookupLogic logic = new LookupLogic();
+}
+
+<style>
+    .centered { vertical-align:middle; text-align:center; }
+    .centered span { display:block; margin:0 auto; }
+
+    .borderless tbody tr td, .borderless tbody tr th, .borderless thead tr th {
+        border: none;
+    }
+</style>
+
+
+<div>
+    <h2>@ViewBag.Title
+    @{
+        if (Model.Alive)
+        {
+            @Html.Raw("<span class='fa fa-heart faa-pulse animated' aria-hidden='true' title='Currently alive'></span>");
+        }
+        else
+        {
+            @Html.Raw("<span class='fa fa-heart-o faa-pulse animated' aria-hidden='true' title='Currently dead'></span>");
+        }
+    }
+    </h2>
+    <hr />
+    <div class="container" style="display:block">
+        <div class="col-md-6" style="display:inline-block">
+            <table class="table table-hover col-md-5 borderless">
+                <tbody>
+                    <tr>
+                        <th align="center" class="col-md-1 centered">
+                            <span class="fa fa-photo fa-2x" aria-hidden="true" title="Photo"></span>
+                        </th>
+                        <td class="col-md-4">
+                            @{
+                                if (Model.ImagePath != null)
+                                {
+                                    <img class="img-thumbnail img-responsive" src="@Url.Content("~/Content/Images/" + Model.ImagePath)" alt="This kill">
+                                }
+                                else
+                                {
+                                    <img class="img-thumbnail img-responsive" src="@Url.Content("~/Content/Images/200x200.gif")" alt="This kill">
+                                }
+                            }
+                                
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6" style="display:inline-block">
+            <table class="table table-hover col-md-5 borderless">
+                <tbody>
+                    <tr>
+                        <th align="center" class="col-md-1 centered">
+                            <span class="fa fa-users fa-2x" aria-hidden="true" title="Family"></span>
+                        </th>
+                        <td class="col-md-4">
+                            @Html.DisplayFor(model => model.Family)
+                        </td>
+                    </tr>
+                    <tr>
+                        <th align="center" class="col-md-1 centered">
+                            <span class="fa fa-crosshairs fa-2x" aria-hidden="true" title="Kills"></span>
+                        </th>
+                        <td class="col-md-4">
+                            @Html.DisplayFor(model => model.Kills)
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th align="center" class="col-md-1 centered">
+                            <span class="fa fa-bullseye fa-2x" aria-hidden="true" title="Victims"></span>
+                        </th>
+                        <td class="col-md-4">
+                            @{
+                                if(Model.Kills > 0)
+                                {
+                                    var victimString = "";
+                                    var list = logic.GetKillsFromId(Model.Id);
+                                    victimString += "<ul class='list-unstyled'>";
+                                    foreach(var item in list)
+                                    {
+                                        victimString += String.Format("<li><a href='{0}'>{1}</a></li>",
+                                            @Url.Action("KillReport", "Home", new { id = item.Id }),
+                                            logic.GetNameFromId(item.target));
+                                    }
+                                    victimString += "</ul>";
+                                    @Html.Raw(victimString)
+                                }
+                                else
+                                {
+                                    @Html.Raw("This player has not killed anyone.")
+                                }
+                            }
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th align="center" class="col-md-1 centered">
+                            <span class="fa fa-heart fa-2x" aria-hidden="true" title="Status"></span>
+                        </th>
+                        <td class="col-md-4">
+                            @{
+                                if (Model.Alive)
+                                {
+                                    @Html.Raw("Alive");
+                                }
+                                else
+                                {
+                                    @Html.Raw("Killed by ");
+                                    @Html.Raw(logic.GetKillerFromId(Model.Id))
+                                }
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <th align="center" class="col-md-1 centered">
+                            <span class="fa fa-info fa-2x" aria-hidden="true" title="Description"></span>
+                        </th>
+                        <td class="col-md-4">
+                            @{
+                                if (Model.Description != null)
+                                {
+                                    @Html.DisplayFor(model => model.Description)
+                                }
+                                else
+                                {
+                                    @Html.Raw("This user has not written a description.")
+                                }
+                            }
+
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @*<table class="table table-hover col-md-5">
+        <tbody>
+            <tr>
+                <th align="center" class="col-md-1 centered">
+                    <span class="fa fa-photo fa-2x" aria-hidden="true" title="Photo"></span>
+                </th>
+                <td class="col-md-4">
+                    <img class="img-thumbnail img-responsive" src="@Url.Content("~/Content/Images/" + Model.ImagePath)" alt="This kill">
+                </td>
+            </tr>
+            <tr>
+                <th align="center" class="col-md-1 centered">
+                    <span class="fa fa-users fa-2x" aria-hidden="true" title="Family"></span>
+                </th>
+                <td class="col-md-4">
+                    @Html.DisplayFor(model => model.Family)
+                </td>
+            </tr>
+            <tr>
+                <th align="center" class="col-md-1 centered">
+                    <span class="fa fa-crosshairs fa-2x" aria-hidden="true" title="Kills"></span>
+                </th>
+                <td class="col-md-4">
+                    @Html.DisplayFor(model => model.Kills)
+                </td>
+            </tr>
+            <tr>
+                <th align="center" class="col-md-1 centered">
+                    <span class="fa fa-heart fa-2x" aria-hidden="true" title="Status"></span>
+                </th>
+                <td class="col-md-4">
+                    @{
+                        if (Model.Alive)
+                        {
+                            @Html.Raw("Alive");
+                        }
+                        else
+                        {
+                            @Html.Raw("Dead");
+                        }
+                    }
+                </td>
+            </tr>
+            <tr>
+                <th align="center" class="col-md-1 centered">
+                    <span class="fa fa-info fa-2x" aria-hidden="true" title="Description"></span>
+                </th>
+                <td class="col-md-4">
+                    @{
+                        if(Model.Description != null)
+                        {
+                            @Html.DisplayFor(model => model.Description)
+                        }
+                        else
+                        {
+                            @Html.Raw("This user has not written a description.")
+                        }
+                    }
+                    
+                </td>
+            </tr>
+        </tbody>
+    </table>*@
+</div>
+<br /><hr />
+<p>
+    @Html.ActionLink("Back to List", "Index")
+</p>

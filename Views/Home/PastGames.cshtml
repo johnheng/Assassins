@@ -1,0 +1,38 @@
+﻿@using Assassins.Models
+
+@model IEnumerable<Assassins.Models.Game>
+
+@{
+    ViewBag.Title = "Past Games";
+}
+
+
+<div class="heading-about marginbot-50">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2">
+                <div class="section-heading">
+                    <h2>@ViewBag.Title</h2>
+                    <p>Assassins is a game where everyone in the game is assigned a target, who is someone else in the game. You then find your target in real life and eliminate him. After eliminating your target, you go after his target.</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        @foreach (Game item in Model)
+        {
+            <a href="@Url.Action("PastGame", "Home", new { id = item.Id })" class="col-xs-12 col-sm-4 col-md-3">
+                <div class="ripple grey team boxed-grey">
+                    <div class="inner">
+                        <h5>Game #@item.Id</h5>
+                        <p class="subtitle">@String.Format("{0:M/d/yyyy}", item.StartDate)<br />Click to view more</p>
+                    </div>
+                </div>
+            </a>
+        }
+    </div>
+</div>

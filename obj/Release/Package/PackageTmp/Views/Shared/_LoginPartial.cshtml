@@ -1,0 +1,41 @@
+﻿@using Microsoft.AspNet.Identity
+@using System.Data.Entity
+@using Microsoft.AspNet.Identity.EntityFramework
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+    @Html.AntiForgeryToken()
+    var currentUserId = User.Identity.GetUserId();
+    var manager = new UserManager<Assassins.Models.ApplicationUser>(new UserStore<Assassins.Models.ApplicationUser>(new Assassins.Models.ApplicationDbContext()));
+    var currentUser = manager.FindById(currentUserId);
+
+    if(currentUser.Admin)
+    {
+        @Html.Raw("<ul class='nav navbar-nav navbar-right navbar-admin'>");
+    }
+    else
+    {
+        @Html.Raw("<ul class='nav navbar-nav navbar-right'>");
+    }
+        <li>
+            @{
+                
+                if(currentUser.Name != null)
+                {
+                    @Html.ActionLink("Hello " + currentUser.Name + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
+                }
+            }
+        </li>
+        <li><a href="" data-toggle="modal" data-target="#profileModal"><span class="fa fa-user"></span></a></li>
+        <li><a href="javascript:document.getElementById('logoutForm').submit()"><span class="fa fa-sign-out"></span></a></li>
+    @Html.Raw("</ul>")
+    }
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+        <li>@Html.ActionLink("Login", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+    </ul>
+}

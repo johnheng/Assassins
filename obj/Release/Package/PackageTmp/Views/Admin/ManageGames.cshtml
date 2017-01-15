@@ -1,0 +1,83 @@
+﻿@model IEnumerable<Assassins.Models.Game>
+
+@{ ViewBag.Title = "Manage Games"; }
+
+<p class="text-success">@ViewBag.StatusMessage</p>
+<div class="table-responsive">
+    <table class="table">
+        <tr>
+            <th>
+                ID
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.StartDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EndDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Current)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Registration)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Active)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Current)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Registration)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Active)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "EditGame", routeValues: new { id = item.Id }, htmlAttributes: new { @id = item.Id, @class = "btn btn-default btn-sm" })
+                    @Html.ActionLink("Delete", "DeleteGame", routeValues: new { id = item.Id }, htmlAttributes: new { @id = item.Id, @class = "btn btn-default btn-sm" })
+                    @if (item.Current)
+                    {
+                        @Html.ActionLink("Assign Targets", "AssignTargets", routeValues: new { id = item.Id }, htmlAttributes: new { @id = item.Id, @class = "btn btn-success btn-sm" })
+                    }
+                    else
+                    {
+                        @Html.ActionLink("Assign Targets", "AssignTargets", routeValues: new { id = item.Id }, htmlAttributes: new { @disabled = "disabled", @id = item.Id, @class = "btn btn-success btn-sm" })
+                    }
+
+                    @if (item.Current == true && item.Active == true)
+                    {
+                        @Html.ActionLink("Pause", "EndGame", routeValues: new { id = item.Id }, htmlAttributes: new { @id = item.Id, @style="width:68px", @class = "btn btn-warning btn-sm" })
+                    }
+                    else if (item.Current == true && item.Active == false)
+                    {
+                        @Html.ActionLink("Resume", "StartGame", routeValues: new { id = item.Id }, htmlAttributes: new { @id = item.Id, @style = "width:68px", @class = "btn btn-success btn-sm" })
+                    }
+                    else
+                    {
+                        @Html.ActionLink("Resume", "#", routeValues: new { id = item.Id }, htmlAttributes: new { @id = item.Id, @style = "width:68px", @class = "btn btn-default btn-sm", @disabled = "disabled" })
+                    }
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>
+
+@Html.ActionLink("Back to Index", "Index", routeValues: null, htmlAttributes: new { @class = "btn btn-default" })
+@Html.ActionLink("Create New", "CreateGame", routeValues: null, htmlAttributes: new { @class="btn btn-success"})

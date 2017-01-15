@@ -1,0 +1,63 @@
+﻿@using Assassins.Models
+@model LoginViewModel
+@{
+    ViewBag.Title = "Log in";
+}
+@*<div class="row">
+    <div class="col-md-8">
+        <section id="loginForm">*@
+            @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class="form-input", @role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                <h1>Login</h1>
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @*<div class="form-group">
+                    @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                    </div>
+                </div>*@
+                @Html.TextBoxFor(m => m.Email, new { @class = "input-control", @placeholder = "Email", @required = "" })
+                <div class="validation">@Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger " })</div>
+                @*<div class="form-group">
+                    @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                    </div>
+                </div>*@
+                @Html.PasswordFor(m => m.Password, new { @class = "input-control", @placeholder="Password", @required="" })
+                <div class="validation">@Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger " })</div>
+                @*<div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <div class="checkbox">
+                            @Html.CheckBoxFor(m => m.RememberMe)
+                            @Html.LabelFor(m => m.RememberMe)
+                        </div>
+                    </div>
+                </div>*@
+                @*<div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">*@
+                        <input type="submit" value="Log in" class="input-button" />
+                    @*</div>
+                </div>*@
+                <p style="margin-left:25px; margin-bottom:0;">
+                    @Html.ActionLink("Register as a new user", "Register")
+                </p>
+                @*<p style="margin-left:25px">
+                    @Html.ActionLink("Forgot your password?", "ForgotPassword", "Account", null, null)
+                </p>*@
+            }
+        @*</section>
+    </div>
+</div>*@
+
+@*<form class="input-form">
+    <h1>Login</h1>
+    <input class="input-control" placeholder="Username" type="text" required="">
+    <input class="input-control" placeholder="Password" type="password" required="">
+    <button class="input-button">Submit</button>
+</form>*@
+
+<script src="~/Scripts/jquery.validate.min.js"></script>

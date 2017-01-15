@@ -1,0 +1,60 @@
+﻿@{
+    ViewBag.Title = "Weapons";
+}
+
+<section id="history" name="history"></section>
+<div id="w" style="text-align:left">
+    <div class="container">
+        <div>
+            <div>
+                @if (!Request.Browser.IsMobileDevice)
+                {
+                    @Html.Raw("<div class='container' style='width:70%'>")
+                }
+                    <div class="row">
+                        <div class="col-lg-8 col-lg-offset-2">
+                            <div class="section-heading">
+                                <h2 style="text-align:center">The Story Behind the Weapons</h2>
+                                <p>The weapons that are used in Assassins are based off of great things that have come out of China. Here is a little more insight on what these items are and why they were important.</p>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="media">
+                        <div class="media-left media-middle">
+                            <img class="media-object" src="~/Content/Images/rsz_fireworks.jpg" />
+                        </div>
+                        <div class="media-body">
+                            <h4 class="media-heading">Gunpowder/Fireworks</h4>
+                            Gunpowder was discovered in the 9th century by Chinese alchemists searching for an elixir of immortality. There is a legend behind the invention of fireworks by the Chinese. It is said that one day a chef with the Chinese army mixed three common kitchen ingredients, saltpeter, sulfur and charcoal. He dropped these ingredients inadvertently into fire and this produced a colorful flame. This made him excited and he tried to burn it in a closed bamboo shoot. This resulted in an enormous explosion. Thus, the basic firecracker was born. This crude black powder that constituted the ancient fireworks mixture was named as ‘huo yao’ (fire chemical) by the Chinese.<br />
+                            Traditionally people believed that the fire and noise from fireworks scared away evil spirits and bad luck in the New Year. Chinese are very big believers in luck and make sure the New Year starts with lots of very noisy and exciting fireworks. (<a href="http://bit.ly/1l1Xnrt" target="_blank">Source</a>)
+                        </div>
+                    </div>
+
+                    <div class="media">
+                        <div class="media-body" style="text-align:right">
+                            <h4 class="media-heading">Bamboo</h4>
+                            Bamboo, one of the “Four Gentlemen” (bamboo, orchid, plum blossom and chrysanthemum), plays such an important role in traditional Chinese culture that it is even regarded as a behaviour model of the gentleman. As bamboo has some features such as uprightness, tenacity and hollow heart, people endow bamboo with integrity, elegance and plainness, though it is not physically strong. Ancient Chinese poets wrote countless poems to praise bamboo, but actually they were truly talking about people like bamboo and express their understanding of what a real gentleman should be like. Just as a bamboo is hollow-hearted, [a man] should open his heart to accept anything of benefit and never have arrogance or prejudice. (<a href="http://bit.ly/1kT6wlQ" target="_blank">Source</a>)
+                        </div>
+                        <div class="media-right media-middle">
+                            <img class="media-object" src="~/Content/Images/rsz_bamboo.jpg" />
+                        </div>
+                    </div>
+
+                    <div class="media">
+                        <div class="media-left media-middle">
+                            <img class="media-object" src="~/Content/Images/rsz_printing.jpg" />
+                        </div>
+                        <div class="media-body">
+                            <h4 class="media-heading">Ink/Printing</h4>
+                            Originally, printing was done with woodblocks on textiles in 220 AD. It reached Europe by the 14th century or before, via the Islamic world, and by around 1400 was being used on paper for old master prints and playing cards.
+                        </div>
+                    </div>
+                @if (!Request.Browser.IsMobileDevice)
+                {
+                    @Html.Raw("</div>")
+                }
+            </div>
+        </div>
+    </div><!-- /container -->
+</div><!-- /g -->

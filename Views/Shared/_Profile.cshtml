@@ -1,0 +1,146 @@
+﻿@using Microsoft.AspNet.Identity
+@using System.Data.Entity
+@using Microsoft.AspNet.Identity.EntityFramework
+@using Assassins.Logic
+@if (Request.IsAuthenticated)
+{
+<div class="modal fade" id="profileModal" tabindex="-1" role="dialog" aria-labelledby="profileModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Your Profile</h4>
+            </div>
+            @{
+                var currentUserId = User.Identity.GetUserId();
+                var manager = new UserManager<Assassins.Models.ApplicationUser>(new UserStore<Assassins.Models.ApplicationUser>(new Assassins.Models.ApplicationDbContext()));
+                var currentUser = manager.FindById(currentUserId);
+                LookupLogic logic = new LookupLogic();
+            }
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6 col-xs-12">
+                        <a href='@Url.Action("ChangePhoto", "Manage")'>
+                            @{if (currentUser.ImagePath == null)
+                              {
+                                  currentUser.ImagePath = "200x200.gif";
+                              }
+                            }
+                            <img class="img-thumbnail" src="@Url.Content("~/Content/Images/" + currentUser.ImagePath)" alt="Your picture">
+                        </a>
+                    </div>
+                    <div class="col-md-6 col-xs-12">
+
+                        @*<h3><a href='@Url.Action("PlayerProfile", "Home", new { id = currentUserId })'>@currentUser.Name</a><p class="lead"> @currentUser.Family Assassin</p></h3>*@
+                        <h3>@currentUser.Name <a href="@Url.Action("PlayerProfile", "Home", new { id = currentUserId })"><span class="fa fa-user"></span></a></h3>
+                        @{
+                              String targetName = "";
+                              if (currentUser.CurrentTarget != null)
+                              {
+                                  targetName = logic.GetNameFromId(currentUser.CurrentTarget);
+                              }
+                              if (currentUser.Description != null)
+                              {
+                                <b>Description:</b> @currentUser.Description<br />
+                              }
+
+                              if (currentUser.GameID == null)
+                              {
+                                @Html.Raw("<p>You have to be registered for a game before you can receive a target.</p>")
+                              }
+                              else if (currentUser.CurrentTarget == null && currentUser.GameID != null)
+                              {
+                                @Html.Raw("<p>You currently do not have a target.</p>")
+                              }
+                              else
+                              {
+                                    String targetColor;
+                                    String targetFamily = logic.GetUserFromId(currentUser.CurrentTarget).Family;
+                                    if (targetFamily == "Shu")
+                                    {
+                                        targetColor = "#C8E6C9";
+                                    }
+                                    else if (targetFamily == "Wei")
+                                    {
+                                        targetColor = "#B3E5FC";
+                                    }
+                                    else
+                                    {
+                                        targetColor = "#FFCDD2";
+                                    }
+
+
+                                    if (targetName == currentUser.Name)
+                                    {
+                                        targetName = "yourself";
+                                    }
+                                    else
+                                    {
+                                        targetName += " from " + targetFamily;
+                                    }
+
+                                    if(currentUser.GameID != logic.GetCurrentGameId() && !logic.GetCurrentGame().Active)
+                                    {
+                                        @Html.Raw("Remember to join the current game with the button below!");
+                                    }
+                                    else if (!logic.GetCurrentGame().Active)
+                                    {
+                                        @Html.Raw("The current game is not active.");
+                                    }
+                                
+                                    else if(currentUser.CurrentTarget == currentUser.Id)
+                                    {
+                                        @Html.Raw("You can't kill yourself, sorry.");
+                                    }
+                                    else if(targetFamily == currentUser.Family)
+                                    {
+                                        @Html.Raw("Remember that killing someone from your own family will <strong>not yield any points</strong>. You should do this only if your family member is too weak to carry out assassinations themselves.")
+                                    }
+                                    else
+                                    {
+                                        var targetString = "<p>Your current target is <mark style='background-color:" + targetColor + "'><strong>" + targetName + "</strong></mark>.</p>";
+                                        @Html.Raw(targetString);
+                                    }
+                              }
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                
+                @{
+                    if (currentUser.GameID == null || currentUser.GameID != logic.GetCurrentGameId())
+                    {
+                        using (@Html.BeginForm("JoinCurrentGame", "Manage", routeValues: null))
+                        {
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            if (logic.GetCurrentGame().Registration == true)
+                            {
+                                <button type="submit" class="btn btn-success">Join Current Game!</button>
+                            }
+                            else
+                            {
+                                <button type="submit" disabled="disabled" class="btn btn-success">Join Current Game!</button>
+                            }
+                        }
+                    }
+                    else
+                    {
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <a type="button" title="Manage" class="btn btn-info" href="@Url.Action("Index", "Manage")"><i class="fa fa-pencil-square-o fa-lg"></i></a>
+                        if (currentUser.CurrentTarget != null && !targetName.Contains("yourself") && logic.GetCurrentGame().Active)
+                        {
+                            //<button type="submit" class="btn btn-danger">Confirm a kill</button>
+                            @Html.ActionLink("Confirm a Kill", "ConfirmKill", "Account", routeValues: null, htmlAttributes: new { @id = "confirmKill", @class = "btn btn-danger" });
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-danger" disabled="disabled">Confirm a kill</button>
+                        }
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+}

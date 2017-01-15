@@ -1,0 +1,90 @@
+﻿@model IEnumerable<Assassins.Models.Event>
+
+@{
+    ViewBag.Title = "Event Details";
+    
+    var logic = new Assassins.Logic.LookupLogic();
+}
+<p class="text-success">@ViewBag.StatusMessage</p>
+<p>
+    @Html.ActionLink("Create New", "CreateEvent")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.user)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.target)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.date)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.type)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.comment)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.gameid)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.photourl)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @*@Html.DisplayFor(modelItem => item.user)*@
+            @Html.Raw(logic.GetNameFromId(item.user))
+        </td>
+        <td>
+            @*@Html.DisplayFor(modelItem => item.target)*@
+            @if (item.target != null)
+            {
+                @Html.Raw(logic.GetNameFromId(item.target))
+            }
+                
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.date)
+        </td>
+        <td>
+            @*@Html.DisplayFor(modelItem => item.type)*@
+            @if(item.type == 0)
+            {
+                @Html.Raw("kill")
+            }
+            else if(item.type == 1)
+            {
+                @Html.Raw("comment")
+            }
+            else
+            {
+                @Html.Raw("join")
+            }
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.comment)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.gameid)
+        </td>
+        <td>
+            @*@Html.DisplayFor(modelItem => item.photourl)*@
+            @if (item.photourl != null)
+            {
+                <img class="img-thumbnail" width="200" src="@Url.Content("~/Content/Images/Kills/" + item.photourl)" alt="">
+            }
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "EditEvent", routeValues: new { id = item.Id }, htmlAttributes: new { @id = item.Id, @class = "btn btn-default btn-sm" })
+            @Html.ActionLink("Delete", "DeleteEvent", routeValues: new { id = item.Id }, htmlAttributes: new { @id = item.Id, @class = "btn btn-default btn-sm" })
+        </td>
+    </tr>
+}
+
+</table>

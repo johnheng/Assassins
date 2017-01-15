@@ -1,0 +1,170 @@
+﻿@using Microsoft.AspNet.Identity
+@using System.Data.Entity
+@using Microsoft.AspNet.Identity.EntityFramework
+@using Assassins.Logic
+@using Assassins.Models
+
+@{
+    ViewBag.Title = "Home";
+    Layout = "~/Views/Shared/_AssassinsLayout.cshtml";
+    var logic = new LookupLogic();
+}
+<!-- ========== HEADER SECTION ========== -->
+<section id="home" name="home"></section>
+<div id="headerwrap">
+    <div class="container">
+        <br>
+        <h1>Assassins</h1>
+        <h2>Chinese Student Association @@ VCU</h2>
+        <div class="row">
+            <br>
+            <br>
+            <br>
+            <div class="col-lg-6 col-lg-offset-3">
+            </div>
+        </div>
+    </div><!-- /container -->
+</div><!-- /headerwrap -->
+<!-- ========== WHITE SECTION ========== -->
+<div id="w">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2">
+                @if (ViewBag.StatusMessage != "")
+                {
+                    <div class="alert alert-success alert-dismissible ripple grey" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        @ViewBag.StatusMessage
+                    </div>
+                }
+                <h3>WELCOME TO <bold>ASSASSINS</bold>.</h3>
+                <h4>
+                    @if(logic.GetCurrentGame().Active)
+                    {
+                        @Html.Raw("THE CURRENT GAME IS <strong>LIVE</strong> AND IN PROGRESS");
+                    }
+                    else
+                    {
+                        @Html.Raw("<strong>ASSASSINS</strong> IS A WEB APP THAT ALLOWS YOU TO PLAY WITH LESS <bold>FUSS AND HEADACHE</bold>.<br/>IT MAKES ORGANIZING A GAME <strong>EASIER</strong> AND MORE <strong>STREAMLINE</strong>.");
+                    }
+                </h4>
+                @if (Request.IsAuthenticated)
+                {
+                    var currentUserId = User.Identity.GetUserId();
+                    var manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
+                    var currentUser = manager.FindById(currentUserId);
+
+                    if (currentUser.GameID == null || currentUser.GameID != logic.GetCurrentGameId())
+                    {
+                        using (@Html.BeginForm("JoinCurrentGame", "Manage", routeValues: null))
+                        {
+                            if (logic.GetCurrentGame().Registration == true)
+                            {
+                                <button type="submit" class="btn btn-success ripple grey" style="margin-top:20px;">Join Current Game!</button>
+                            }
+                        }
+                    }
+
+                    if (currentUser.GameID == logic.GetCurrentGameId() && logic.GetCurrentGame().Active && currentUser.CurrentTarget != null)
+                    {
+                        <div href="#" data-toggle="modal" data-target="#profileModal" class="alert alert-success alert-dismissible ripple grey" style="margin-top:25px;" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            You have been assigned a target, <a href="#" data-toggle="modal" data-target="#profileModal" class="alert-link">click here</a> to view it!
+                        </div>
+                    }
+                }
+                else
+                {
+                    @Html.ActionLink("Register now!", "Register", "Account", routeValues: null, htmlAttributes: new { @class = "btn btn-success ripple grey", @style="margin-top:20px;" })
+                }
+            </div>
+        </div>
+    </div><!-- /container -->
+</div><!-- /w -->
+<!-- ========== SERVICES - GREY SECTION ========== -->
+<section id="players" name="players"></section>
+<div id="g">
+    <div class="container">
+        <div >
+            <h3>Players</h3>
+            <small>This round (#@logic.GetCurrentGameId()) runs from <strong>@String.Format("{0:dddd, MMM d}", logic.GetCurrentGame().StartDate)</strong> to <strong>@String.Format("{0:dddd, MMM d}", logic.GetCurrentGame().EndDate)</strong></small>
+            @{ Html.RenderPartial("_PlayersGridPartial"); }
+        </div>
+    </div><!-- /container -->
+</div><!-- /g -->
+<!-- ========== CHARTS - DARK GREY SECTION ========== -->
+@if (!Request.Browser.IsMobileDevice)
+{
+    <div id="dg">
+        <div class="container">
+            <div class="row">
+                @{ Html.RenderPartial("_RemainingPlayers"); }
+            </div>
+        </div><!-- /container -->
+    </div><!-- /dg -->
+}
+
+
+<section id="events" name="events"></section>
+<div id="portfoliowrap">
+    <div class="container">
+        <div class="row">
+            <h3><a href="@Url.Action("PastGame", "Home", new { id = logic.GetCurrentGameId() })">Recent Events</a></h3>
+
+            @{ Html.RenderPartial("_EventsPartial");}
+        </div>
+    </div><!-- /container -->
+</div><!-- /portfoliowrap -->
+<!-- ========== ABOUT - GREY SECTION ========== -->
+<section id="about" name="rules"></section>
+<div id="g">
+    <div class="container">
+        <div class="row text-center bg-gray">
+            @Html.Partial("_RulesPartial")
+        </div>
+    </div><!-- /container -->
+</div><!-- /g -->
+<!-- ========== HISTORY - GREY SECTION ========== -->
+<section id="history" name="history"></section>
+<div id="dg" style="text-align:left">
+    <div class="container">
+        <div>
+            @Html.Partial("_History")
+        </div>
+    </div><!-- /container -->
+</div><!-- /g -->
+<!-- ========== FOOTER SECTION ========== -->
+<section id="contact" name="contact"></section>
+<div id="f">
+    <div class="container">
+        <div class="row">
+            <h3><b>CONTACT US</b></h3>
+            <br>
+
+            <div class="col-lg-6">
+                <h3><b>Email Us:</b></h3>
+                <h3>csaatvcu<span class="fa fa-at fa-fw" style="padding:0px"></span>gmail</h3>
+                <br>
+            </div>
+
+            <div class="col-lg-6">
+                <h3><b>We Are Social</b></h3>
+                <p>
+                    <a href="https://www.facebook.com/groups/vcucsa/" target="_blank"><i class="fa fa-facebook fa-fw"></i></a>
+                    <a href="https://instagram.com/explore/tags/csavcu/" target="_blank"><i class="fa fa-instagram fa-fw"></i></a>
+                </p>
+                <br>
+            </div>
+        </div>
+    </div><!-- /container -->
+</div><!-- /f -->
+
+<div id="c">
+    <div class="container">
+        <p>Created by <a href="http://johnheng.net">HENGOUTS</a></p>
+
+    </div>
+</div>
+
+
+<script src="~/Scripts/ajax.js"></script>

@@ -1,0 +1,53 @@
+﻿@*@model IEnumerable<Assassins.Models.AspNetUser>*@
+@using Assassins.Logic;
+
+<div class="grid">
+    @{
+        LookupLogic logic = new LookupLogic();
+        var players = logic.GetPlayers();
+        string grid = "";
+        foreach (var player in players.Where(player => player.GameID == logic.GetCurrentGameId() && !player.Admin).OrderBy(player => player.Name))
+        {
+            if(player.ImagePath == null)
+            {
+                player.ImagePath = "200x200.gif";
+            }
+            Boolean alive = player.Alive;
+            if(player.Description != null)
+            {
+                player.Description = player.Description.Replace("'", "&#39;");
+            }
+
+            var name = "";
+            if(player.Family == "Shu")
+            {
+                name = "<font color=&#39;4CAF50&#39;><strong>" + player.Name + "</strong></font>";
+            }
+            else if (player.Family == "Wei")
+            {
+                name = "<font color=&#39;2196F3&#39;><strong>" + player.Name + "</strong></font>";
+            }
+            else
+            {
+                name = "<font color=&#39;F44336&#39;><strong>" + player.Name + "</strong></font>";
+            }
+            
+            grid += "<div class='col-lg-2 col-sm-3 col-xs-4' style='margin-bottom: 15px;'>\r\n";
+            grid += String.Format("\t    <a href='{0}' data-toggle='popover' data-trigger='hover' data-html='true' title=",
+                @Url.Action("PlayerProfile", "Home", new { id = player.Id}));
+            grid += String.Format("'{0}' data-content='<b>Kills</b>: {1}<br><b>Family</b>: {2}<br><i>{3}</i>' data-placement='bottom'>\r\n",
+                name,
+                player.Kills,
+                player.Family,
+                player.Description);
+            grid += String.Format("\t\t        <div class='ripple white imagecontainer {0}'>\r\n",
+                alive ? "" : "overlay");
+            grid += String.Format("\t\t\t\t          <img src='" + "/Content/Images/" + player.ImagePath + "' class=' {0}'>\r\n",
+                alive ? "" : "dead");
+            grid += "\t\t\t        </div>\r\n";
+            grid += "\t    </a>\r\n";
+            grid += "</div>\r\n";
+        }
+        @Html.Raw(grid);
+    }
+</div>

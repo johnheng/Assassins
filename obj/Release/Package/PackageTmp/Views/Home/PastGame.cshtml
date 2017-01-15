@@ -1,0 +1,220 @@
+﻿@using Assassins.Models
+@using Assassins.Logic;
+@model Game
+
+@{
+    ViewBag.Title = "Game #" + ViewBag.GameId;
+    var id = ViewBag.GameId;
+    LookupLogic logic = new LookupLogic();
+}
+
+<style>
+    span {
+        padding-right: 15px;
+    }
+</style>
+
+<div class="heading-about marginbot-50">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2">
+                <div class="section-heading" style="text-align:center">
+                    <h2>@ViewBag.Title </h2>
+                    <small class="lead">@String.Format("{0:M/d/yyyy}", Model.StartDate) to @String.Format("{0:M/d/yyyy}", Model.EndDate)</small>
+                </div>
+
+                <div class="section-heading" style="text-align:center">
+                    <h3>Points</h3>
+                </div>
+                <div class="col-md-8 col-md-offset-2 col-sm-12 col-xs-12" >
+                    <div class="col-md-4 col-sm-4 col-xs-4 points">
+                        <font color="#4CAF50">
+                            Shu 蜀<br />
+                            <h1 style="color:#4CAF50">@logic.GetEvents().Where(e => e.type == 0 && e.gameid == id && (logic.GetUserFromId(e.user).Family == "Shu" && logic.GetUserFromId(e.target).Family != "Shu")).Count()</h1>
+                        </font>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-4 points">
+                        <font color="#2196F3">
+                            Wei 魏<br />
+                            <h1 style="color:#2196F3">@logic.GetEvents().Where(e => e.type == 0 && e.gameid == id && (logic.GetUserFromId(e.user).Family == "Wei" && logic.GetUserFromId(e.target).Family != "Wei")).Count()</h1>
+                        </font>
+                    </div>
+                    <div class="col-md-4 col-sm-4 col-xs-4 points">
+                        <font color="#F44336">
+                            Wu 吳<br />
+                            <h1 style="color:#F44336">@logic.GetEvents().Where(e => e.type == 0 && e.gameid == id && (logic.GetUserFromId(e.user).Family == "Wu" && logic.GetUserFromId(e.target).Family != "Wu")).Count()</h1>
+                        </font>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    <h3 style="text-align:center">Players</h3>
+    @if (!Request.Browser.IsMobileDevice)
+    {
+        @Html.Raw("<div class='container'>")
+    }
+        <div class="grid">
+            @{
+                var gamePlayers = new List<AspNetUser>();
+                var evnts = logic.GetEvents().Where(e => e.type.Equals(2) && e.gameid == Model.Id).ToList();
+                foreach (var item in evnts)
+                {
+                    gamePlayers.Add(logic.GetUserFromId(item.user));
+                }
+
+                string grid = "";
+                foreach (var player in gamePlayers
+                        .OrderBy(player => player.Name))
+                {
+                    if (player.ImagePath == null)
+                    {
+                        player.ImagePath = "200x200.gif";
+                    }
+                    Boolean alive = player.Alive;
+                    if (player.Description != null)
+                    {
+                        player.Description = player.Description.Replace("'", "&#39;");
+                    }
+
+                    var name = "";
+                    if (player.Family == "Shu")
+                    {
+                        name = "<font color=&#39;4CAF50&#39;><strong>" + player.Name + "</strong></font>";
+                    }
+                    else if (player.Family == "Wei")
+                    {
+                        name = "<font color=&#39;2196F3&#39;><strong>" + player.Name + "</strong></font>";
+                    }
+                    else
+                    {
+                        name = "<font color=&#39;F44336&#39;><strong>" + player.Name + "</strong></font>";
+                    }
+
+                    grid += "<div class='col-lg-2 col-sm-3 col-xs-4' style='margin-bottom: 15px;'>\r\n";
+                    grid += String.Format("\t    <a href='{0}' data-toggle='popover' data-trigger='hover' data-html='true' title=",
+                        @Url.Action("PlayerProfile", "Home", new { id = player.Id }));
+                    grid += String.Format("'{0}' data-content='<b>Family</b>: {1}<br><i>{2}</i>' data-placement='bottom'>\r\n",
+                        name,
+                        player.Family,
+                        player.Description);
+                    grid += String.Format("\t\t        <div class='ripple white imagecontainer'>\r\n");
+                    grid += String.Format("\t\t\t\t          <img src='" + "/Content/Images/" + player.ImagePath + "'>\r\n");
+                    grid += "\t\t\t        </div>\r\n";
+                    grid += "\t    </a>\r\n";
+                    grid += "</div>\r\n";
+                }
+                @Html.Raw(grid);
+            }
+        </div>
+    @if (!Request.Browser.IsMobileDevice)
+    {
+        @Html.Raw("</div>")
+    }
+</div>
+
+<hr />
+@* ALL EVENT PHOTOS *@
+@{
+    var pictures = logic.GetEvents().OrderByDescending(e => e.date).Where(e => e.type == 0 && e.gameid == id).ToList();
+}
+<div class="container">
+    <h3 style="text-align:center">Pictures</h3>
+    <div class="grid">
+        @foreach (var evnt in pictures)
+        {
+            <a href="@Url.Action("KillReport", "Home", new { id = evnt.Id })" class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <div class="ripple grey team boxed-grey">
+                    <div class="inner">
+                        <div class="col-md-5 col-sm-5 col-xs-6">
+                            @{
+                                if(evnt.photourl == null)
+                                {
+                                    if (logic.GetUserFromId(evnt.user).ImagePath != null)
+                                    {
+                                        evnt.photourl = @Url.Content("~/Content/Images/" + logic.GetUserFromId(evnt.user).ImagePath);
+                                    }
+                                    else
+                                    {
+                                        evnt.photourl = @Url.Content("~/Content/Images/200x200.gif");
+                                    }
+                                    
+                                }
+                                else
+                                {
+                                        evnt.photourl = @Url.Content("~/Content/Images/Kills/" + evnt.photourl);
+                                }
+                            }
+                            <div class="imagecontainer">
+                                <img src="@evnt.photourl" alt="This kill">
+                            </div>
+                        </div>
+                        <div class="col-md-7 col-sm-7 col-xs-6">
+                            @logic.GetNameFromId(evnt.user).Split(' ')[0] killed @logic.GetNameFromId(evnt.target).Split(' ')[0] on @String.Format("{0:M/d}", evnt.date) at @String.Format("{0:t}", evnt.date)<br />
+                            <i>@evnt.comment</i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        }
+    </div>
+</div>
+
+
+<hr />
+    @* EVENTS *@
+<div class="container">
+    <h3 style="text-align:center">Events</h3>
+    <div id="jumbomobile">
+        <div class="jumbotron pre-scrollable">
+            @{
+                var events = logic.GetEvents().Where(g => g.gameid == id);
+
+                if (events.Count() == 0)
+                {
+                    <h2>There are no recent events.</h2>
+                }
+                else
+                {
+                    string newsfeed = "";
+                    foreach (var item in events.OrderByDescending(x => x.date))
+                    {
+                        //kill
+                        if (item.type == 0)
+                        {
+                            var family = logic.GetFamilyColorFromId(item.user);
+
+                            newsfeed += String.Format("\t<div class='alert alert-{0} event' role='alert'><span class='fa fa-crosshairs fa-fw fa-2x' aria-hidden='true' title='Kill'></span><a href='{1}' class='alert-link'>{2}</a> killed {3} about {4}, <a href='{5}' class='alert-link'>read more</a> here.</div>\r\n",
+                                family,
+                                @Url.Action("PlayerProfile", "Home", new { id = item.user }),
+                                logic.GetNameFromId(item.user),
+                                logic.GetNameFromId(item.target),
+                                "<abbr class='timeago' title='" + item.date + "'>" + item.date + "</abbr>",
+                                @Url.Action("KillReport", "Home", new { id = item.Id }));
+                        }
+                        //comment
+                        else if(item.type == 1)
+                        {
+                            newsfeed += String.Format("\t<div class='alert alert-warning comment' role='alert'><span class='fa fa-comment-o fa-fw fa-2x' aria-hidden='true' title='Comment'></span><a href='{0}' class='alert-link'>{1}</a>: {2} {3}</div>\r\n",
+                                @Url.Action("PlayerProfile", "Home", new { id = item.user }),
+                                logic.GetNameFromId(item.user),
+                                item.comment,
+                                "<small><abbr class='timeago' title='" + item.date + "'>" + item.date + "</abbr></small>");
+                        }
+                        else
+                        {
+                            newsfeed += String.Format("\t<div class='alert alert-warning comment' role='alert'><span class='fa fa-plus fa-fw fa-2x' aria-hidden='true' title='Comment'></span><a href='{0}' class='alert-link'>{1}</a> joined this game. {2}</div>\r\n",
+                                @Url.Action("PlayerProfile", "Home", new { id = item.user }),
+                                logic.GetNameFromId(item.user),
+                                "<small><abbr class='timeago' title='" + item.date + "'>" + item.date + "</abbr></small>");
+                        }
+                    }
+                    @Html.Raw(newsfeed);
+                }
+            }
+        </div>
+    </div>
+</div>

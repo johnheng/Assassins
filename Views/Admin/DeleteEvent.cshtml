@@ -1,0 +1,67 @@
+﻿@model Assassins.Models.Event
+
+@{
+    ViewBag.Title = "Delete Event";
+    var logic = new Assassins.Logic.LookupLogic();
+}
+<div>
+    <h4>Game</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.comment)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.comment)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.gameid)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.gameid)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.date)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.date)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.user)
+        </dt>
+
+        <dd>
+            @*@Html.DisplayFor(model => model.user)*@
+            @Html.Raw(logic.GetNameFromId(Model.user))
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.target)
+        </dt>
+
+        <dd>
+            @*@Html.DisplayFor(model => model.target)*@
+            @Html.Raw(logic.GetNameFromId(Model.target))
+        </dd>
+    </dl>
+</div>
+
+<div>
+    @using (Html.BeginForm("DeleteEvent", "Admin", FormMethod.Post))
+    {
+
+        <div class="form-group">
+            <h2>Are you sure you want to delete this event? <p class="lead" style="margin-bottom: 5px">Deleting an event may have negative consequences on database structure.</p></h2>
+            @Html.HiddenFor(model => model.Id)
+            @Html.ActionLink("Back to List", "ManageGames", routeValues: null, htmlAttributes: new { @class = "btn btn-default" })
+            <input type="submit" value="Delete" class="btn btn-success" />
+
+        </div>
+    }
+</div>

@@ -1,0 +1,47 @@
+﻿@using Assassins.Logic
+@using Assassins.Models
+
+
+@{
+    var log = new LookupLogic();
+    var players = log.GetPlayers().Where(m => m.GameID == log.GetCurrentGameId() && !m.Admin);
+}
+
+<div class="section-heading text-center">
+    <h5>Remaining Players</h5>
+</div>
+
+<div style="display:table; margin: 0 auto;">
+    <div style="display:table-cell" data-placement="bottom" data-original-title="Shu" data-toggle="popover" data-trigger="hover" data-html="true" title="" data-content="@players.Where(m => m.Family == "Shu" && m.Alive == true).Count() out of @players.Where(m => m.Family == "Shu").Count() remaining<br /><ul>@foreach(var player in players.Where(m => m.Family == "Shu" && m.Alive == true)) { @Html.Raw("<li>" + player.Name + "</li>")}</ul>">
+        <input type="text" value="@players.Where(m => m.Family == "Shu" && m.Alive == true).Count()" class="dial" data-width="75"
+               data-max=@players.Where(m => m.Family == "Shu").Count()
+               data-height="75"
+               data-fgcolor="#4CAF50"
+               data-bgcolor="#C8E6C9"
+               data-skin="tron"
+               data-thickness=".2"
+               data-displayprevious=true>
+    </div>
+
+    <div style="display:table-cell" data-placement="bottom" data-original-title="Wei" data-toggle="popover" data-trigger="hover" data-html="true" title="" data-content="@players.Where(m => m.Family == "Wei" && m.Alive == true).Count() out of @players.Where(m => m.Family == "Wei").Count() remaining<br /><ul>@foreach(var player in players.Where(m => m.Family == "Wei" && m.Alive == true)) { @Html.Raw("<li>" + player.Name + "</li>")}</ul>">
+        <input type="text" value="@players.Where(m => m.Family == "Wei" && m.Alive == true).Count()" class="dial" data-width="75"
+               data-max=@players.Where(m => m.Family == "Wei").Count()
+               data-height="75"
+               data-fgcolor="#03A9F4"
+               data-bgcolor="#B3E5FC"
+               data-skin="tron"
+               data-thickness=".2"
+               data-displayprevious=true>
+    </div>
+
+    <div style="display:table-cell" data-placement="bottom" data-original-title="Wu" data-toggle="popover" data-trigger="hover" data-html="true" title="" data-content="@players.Where(m => m.Family == "Wu" && m.Alive == true).Count() out of @players.Where(m => m.Family == "Wu").Count() remaining<br /><ul>@foreach(var player in players.Where(m => m.Family == "Wu" && m.Alive == true)) { @Html.Raw("<li>" + player.Name + "</li>")}</ul>">
+        <input type="text" value="@players.Where(m => m.Family == "Wu" && m.Alive == true).Count()" class="dial" data-width="75"
+               data-max=@players.Where(m => m.Family == "Wu").Count()
+               data-height="75"
+               data-fgcolor="#F44336"
+               data-bgcolor="#FFCDD2"
+               data-skin="tron"
+               data-thickness=".2"
+               data-displayprevious=true>
+    </div>
+</div>  

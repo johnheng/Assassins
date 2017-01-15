@@ -1,0 +1,118 @@
+﻿@using Assassins.Models;
+@using Assassins.Logic;
+@using Microsoft.AspNet.Identity
+@using Microsoft.AspNet.Identity.EntityFramework
+@using System.Data
+@using System.Data.Entity
+@using System.Collections.Generic
+
+@model Event
+
+<style>
+    span {
+        padding-right: 15px;
+    }
+    input {
+        max-width: 280px;
+    }
+</style>
+<div id="jumbomobile">
+    <div class="jumbotron pre-scrollable">
+        @{    
+            LookupLogic logic = new LookupLogic();
+            var events = logic.GetEvents().Where(g => g.gameid == logic.GetCurrentGameId());
+            
+            if(events.Count() == 0)
+            {
+                <h2>There are no recent events.</h2>
+            }
+            else 
+            {
+                string newsfeed = "";
+                foreach (var item in events.OrderByDescending(x => x.date))
+                {
+                    //kill
+                    if (item.type == 0)
+                    {
+                        var family = logic.GetFamilyColorFromId(item.user);
+
+                        newsfeed += String.Format("\t<div class='alert alert-{0} event' role='alert'><span class='fa fa-crosshairs fa-fw fa-2x' aria-hidden='true' title='Kill'></span><a href='{1}' class='alert-link'>{2}</a> killed {3} about {4}, <a href='{5}' class='alert-link'>read more</a> here.</div>\r\n",
+                            family,
+                            @Url.Action("PlayerProfile", "Home", new { id = item.user}),
+                            logic.GetNameFromId(item.user),
+                            logic.GetNameFromId(item.target),
+                            "<abbr class='timeago' title='" + item.date + "'>" + item.date+ "</abbr>",
+                            @Url.Action("KillReport", "Home", new { id = item.Id }));
+                    }
+                    //comment
+                    else if(item.type == 1)
+                    {
+                        newsfeed += String.Format("\t<div class='alert alert-warning comment' role='alert'><span class='fa fa-comment-o fa-fw fa-2x' aria-hidden='true' title='Comment'></span><a href='{0}' class='alert-link'>{1}</a>: {2} {3}</div>\r\n",
+                            @Url.Action("PlayerProfile", "Home", new { id = item.user }),
+                            logic.GetNameFromId(item.user),
+                            item.comment,
+                            "<small><abbr class='timeago' title='" + item.date + "'>" + item.date + "</abbr></small>");
+                    }
+                    else
+                    {
+                        newsfeed += String.Format("\t<div class='alert alert-warning join' role='alert'><span class='fa fa-plus fa-fw fa-2x' aria-hidden='true' title='Comment'></span><a href='{0}' class='alert-link'>{1}</a> joined this game. {2}</div>\r\n",
+                            @Url.Action("PlayerProfile", "Home", new { id = item.user }),
+                            logic.GetNameFromId(item.user),
+                            "<small><abbr class='timeago' title='" + item.date + "'>" + item.date + "</abbr></small>");
+                    }
+                }
+                @Html.Raw(newsfeed);
+            }
+        }
+    </div>
+    
+    @if (Request.IsAuthenticated)
+    {
+        using (Html.BeginForm("Create", "Home", FormMethod.Post, new { role = "form" }))
+        {
+            <div class="form-group" style="display:inline;">
+                @Html.TextBoxFor(m => m.comment, new { @style = "display:inline", @class = "form-control", @placeholder = "Add a comment here" })
+                @{ var htmlString = "<button class='btn btn-default'>Add a Comment</button>"; }
+                @Html.Raw(htmlString)
+                @Html.HiddenFor(m => m.user, new { Value = User.Identity.GetUserId() })
+                @{
+                    var currentTime = DateTime.UtcNow;
+                    TimeZoneInfo easternZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+                    DateTime easternTime = TimeZoneInfo.ConvertTimeFromUtc(currentTime, easternZone);
+                }
+                @Html.HiddenFor(m => m.date, new { Value = easternTime })
+                @Html.HiddenFor(m => m.type, new { Value = 1 })
+                @Html.HiddenFor(m => m.gameid, new { Value = logic.GetCurrentGameId() })
+                <div class="btn-group pull-right">
+                    <button href="javascript:void(0);" type="button" data-toggle="dropdown" class="btn btn-default dropdown-toggle" aria-expanded="false">
+                        Filter&nbsp&nbsp<span class="fa fa-caret-down"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="javascript:void(0);" id="events"><span id="eventsToggle" class="fa fa-check-square-o fa-fw"></span>Events</a></li>
+                        <li><a href="javascript:void(0);" id="comments"><span id="commentsToggle" class="fa fa-check-square-o fa-fw"></span>Comments</a></li>
+                        <li><a href="javascript:void(0);" id="join"><span id="joinToggle" class="fa fa-check-square-o fa-fw"></span>New Players</a></li>
+                    </ul>
+                </div>
+            </div>
+            if (TempData["error"] != null)
+            {
+                @Html.Raw(@TempData["error"])
+            }
+        }
+    }
+    else
+    {
+        <div class="btn-group pull-right">
+            <button href="javascript:void(0);" id="filter" type="button" data-toggle="dropdown"  class="btn btn-default dropdown-toggle" aria-expanded="false">
+                Filter <span class="fa fa-caret-down" style="padding-left:5px; padding-right:0px;"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="javascript:void(0);" id="events"><span id="eventsToggle" class="fa fa-check-square-o fa-fw"></span>Events</a></li>
+                <li><a href="javascript:void(0);" id="comments"><span id="commentsToggle" class="fa fa-check-square-o fa-fw"></span>Comments</a></li>
+                <li><a href="javascript:void(0);" id="join"><span id="joinToggle" class="fa fa-check-square-o fa-fw"></span>New Players</a></li>
+            </ul>
+        </div>
+    }
+    
+    
+</div>

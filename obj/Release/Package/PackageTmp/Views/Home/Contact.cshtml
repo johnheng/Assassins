@@ -1,0 +1,122 @@
+﻿@{
+    ViewBag.Title = "Contact";
+    Layout = "~/Views/Shared/_AssassinsLayout.cshtml";
+}
+<!-- ========== HEADER SECTION ========== -->
+	<section id="home" name="home"></section>
+	<div id="headerwrap">
+		<div class="container">
+			<br>
+			<h1>Assassins</h1>
+			<h2>VCU - Chinese Student Association</h2>
+			<div class="row">
+				<br>
+				<br>
+				<br>
+				<div class="col-lg-6 col-lg-offset-3">
+				</div>
+			</div>
+		</div><!-- /container -->
+	</div><!-- /headerwrap -->
+	
+	
+	<!-- ========== WHITE SECTION ========== -->
+	<div id="w">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8 col-lg-offset-2">
+                    <h3>WELCOME TO <bold>ASSASSINS</bold>.</h3>
+                    <h4><strong>ASSASSINS</strong> IS A WEB APP THAT ALLOWS YOU TO PLAY WITH LESS <bold>FUSS AND HEADACHE</bold>. 
+                    IT MAKES ORGANIZING A GAME <strong>EASIER</strong> AND MORE <strong>STREAMLINE</strong>.</h4>
+				
+				</div>
+			</div>
+		</div><!-- /container -->
+	</div><!-- /w -->
+	
+	<!-- ========== SERVICES - GREY SECTION ========== -->
+	<section id="services" name="players"></section>
+	<div id="g">
+		<div class="container">
+			<div class="row">
+				<h3>Players</h3>
+				@{ Html.RenderPartial("_PlayersGridPartial"); }
+			</div>
+		</div><!-- /container -->
+	</div><!-- /g -->
+	
+	<!-- ========== CHARTS - DARK GREY SECTION ========== -->
+	<div id="dg">
+		<div class="container">
+			<div class="row">
+				@{ Html.RenderPartial("_RemainingPlayers"); }
+			</div>	
+		</div><!-- /container -->
+	</div><!-- /dg -->
+	
+	<section id="portfolio" name="events"></section>
+	<div id="portfoliowrap">
+		<div class="container">
+			<div class="row">
+				<h3>Recent Events</h3>
+				
+                @{ Html.RenderPartial("_EventsPartial");}				
+			</div>	
+		</div><!-- /container -->
+	</div><!-- /portfoliowrap -->
+	
+	<!-- ========== WHITE SECTION ========== -->
+	<div id="w">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8 col-lg-offset-2">
+				<h3>Remember to always play safe and don't do anything crazy.
+				</h3>
+				</div>
+			</div>
+		</div><!-- /container -->
+	</div><!-- /w -->
+	
+	<!-- ========== ABOUT - GREY SECTION ========== -->
+	<section id="about" name="rules"></section>
+	<div id="g">
+		<div class="container">
+            <div class="row text-center bg-gray">
+                @Html.Partial("_RulesPartial")
+            </div>
+		</div><!-- /container -->
+	</div><!-- /g -->
+	
+	<!-- ========== FOOTER SECTION ========== -->
+	<section id="contact" name="contact"></section>
+	<div id="f">
+		<div class="container">
+			<div class="row">
+					<h3><b>CONTACT US</b></h3>
+					<br>
+					
+					<div class="col-lg-6">	
+						<h3><b>Email Us:</b></h3>
+						<h3>csaatvcu<span class="fa fa-at fa-fw" style="padding:0px"></span>gmail</h3>
+						<br>
+					</div>
+					
+					<div class="col-lg-6">
+						<h3><b>We Are Social</b></h3>
+						<p>
+							<a href="index.html#"><i class="icon-facebook"></i></a>
+							<a href="index.html#"><i class="icon-twitter"></i></a>
+							<a href="index.html#"><i class="icon-envelope"></i></a>
+						</p>
+						<br>
+					</div>
+			</div>
+		</div><!-- /container -->
+	</div><!-- /f -->
+	
+	<div id="c">
+		<div class="container">
+			<p>Created by <a href="http://www.blacktie.co">BLACKTIE.CO</a></p>
+		
+		</div>
+    </div>

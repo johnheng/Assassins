@@ -1,0 +1,87 @@
+﻿@model IEnumerable<Assassins.Models.PlayerTargetViewModel>
+
+@{ 
+    ViewBag.Title = "Confirm";   
+}
+<div class="col-md-12 col-xs-12">
+    <div class="col-md-6 col-xs-12">
+        <table class="table col-md-5 col-xs-10">
+            <tr>
+                <th class="col-md-2 col-xs-4">
+                    <span class="fa fa-user"></span>
+                </th>
+                <th class="col-md-1 col-xs-2">
+
+                </th>
+                <th class="col-md-2 col-xs-4">
+                    <span class="fa fa-crosshairs"></span>
+                </th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                String userColor;
+                if(item.user.family == "Shu")
+                {
+                    userColor = "#4CAF50";
+                }
+                else if(item.user.family == "Wei")
+                {
+                    userColor = "#2196F3";
+                }
+                else
+                {
+                    userColor = "#F44336";   
+                }
+                
+                String targetColor;
+                if (item.target.family == "Shu")
+                {
+                    targetColor = "#4CAF50";
+                }
+                else if (item.target.family == "Wei")
+                {
+                    targetColor = "#2196F3";
+                }
+                else
+                {
+                    targetColor = "#F44336";
+                }
+
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.user.name) <br />
+                        <small style="color:@userColor">(@item.user.family)</small>
+                    </td>
+                    <td>
+                        <span class="fa fa-arrow-right"></span>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.target.name) <br />
+                        <small style="color:@targetColor">(@item.target.family)</small>
+                    </td>
+                </tr>
+            }
+
+        </table>
+    </div>
+    <div class="col-md-6 col-xs-12">
+        @using (Html.BeginForm("AssignTargetsSave", "Admin", FormMethod.Post))
+        {
+            <div class="form-group">
+                <h3>Do you want to save this list and assign players their targets? <small>Double check to make sure you're okay with this shuffle!</small></h3>
+                @for (int i = 0; i < Model.Count(); i++ )
+                {
+                    @Html.Hidden("[" + i + "].user.name", Model.ElementAt(i).user.name);
+                    @Html.Hidden("[" + i + "].user.id", Model.ElementAt(i).user.id);
+                    @Html.Hidden("[" + i + "].user.family", Model.ElementAt(i).user.family);
+                    @Html.Hidden("[" + i + "].target.name", Model.ElementAt(i).target.name);
+                    @Html.Hidden("[" + i + "].target.id", Model.ElementAt(i).target.id);
+                    @Html.Hidden("[" + i + "].target.family", Model.ElementAt(i).target.family);
+                }
+                @Html.ActionLink("Back to List", "ManageGames", routeValues: null, htmlAttributes: new { @class = "btn btn-default" })
+                <input type="submit" value="Confirm" class="btn btn-success" />
+            </div>
+        }
+    </div>
+</div>

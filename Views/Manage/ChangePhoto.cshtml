@@ -1,0 +1,58 @@
+﻿@using System.Web;
+@using System.Linq;
+@using System.Web.Mvc;
+@using Microsoft.AspNet.Identity;
+@using Assassins.Models;
+@using System.Data.Entity;
+@using Microsoft.AspNet.Identity.EntityFramework;
+
+@model Assassins.Models.ChangePhotoViewModel
+@{
+    ViewBag.Title = "Change Your Profile Picture";
+}
+
+<h2>@ViewBag.Title.</h2>
+
+@using (Html.BeginForm("ChangePhoto", "Manage", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    var currentUserId = User.Identity.GetUserId();
+    var manager = new UserManager<Assassins.Models.ApplicationUser>(new UserStore<Assassins.Models.ApplicationUser>(new Assassins.Models.ApplicationDbContext()));
+    var currentUser = manager.FindById(currentUserId);
+    <h4>Change Photo Form</h4>
+    <hr />
+    <div class="form-group">
+        <label class="col-md-2 control-label">Current Photo</label>
+        <div class="col-md-10">
+            @{
+                if (currentUser.ImagePath == null)
+                {
+                    @Html.Raw("You currently do not have a photo uploaded");
+                }
+                else
+                {
+                    <img class="img-thumbnail" src="@Url.Content("~/Content/Images/" + currentUser.ImagePath)" alt="Your picture">
+                }
+            }
+            
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.ImageUrl, new { @class = "col-md-2 control-label"})
+        <div class="col-md-10">
+            @Html.ValidationSummary(true)
+            <fieldset>
+                <input type="file" name="file" accept="image/*" />
+            </fieldset>
+            <small>Works best with square photos!</small>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Save" class="btn btn-default" />
+        </div>
+    </div>
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

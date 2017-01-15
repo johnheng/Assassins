@@ -1,0 +1,83 @@
+﻿@using Microsoft.AspNet.Identity;
+@using Assassins.Models;
+@using System.Data.Entity;
+@using Microsoft.AspNet.Identity.EntityFramework;
+@using Assassins.Logic;
+
+@model ConfirmKillViewModel
+@{
+    ViewBag.Title = "Confirm Kill";
+}
+
+
+<h2>@ViewBag.Title.</h2>
+<hr />
+@{
+    if (Request.IsAuthenticated)
+    {
+        using (Html.BeginForm("ConfirmKill", "Account", FormMethod.Post, new { @enctype = "multipart/form-data", @class = "form-horizontal", @id="KillForm", role = "form" }))
+        { 
+            @Html.ValidationSummary("", new { @class = "text-danger" })
+            <div class="form-group">
+                <label class="col-md-2 control-label">Current Target</label>
+                <div class="col-md-10">
+                    @{
+                        var currentUserId = User.Identity.GetUserId();
+                        var manager = new UserManager<Assassins.Models.ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
+                        var currentUser = manager.FindById(currentUserId);
+                        LookupLogic logic = new LookupLogic();
+                        var image = "200x200.gif";
+                        if( logic.GetUserFromId(currentUser.CurrentTarget).ImagePath != null)
+                        {
+                            image = logic.GetUserFromId(currentUser.CurrentTarget).ImagePath;
+                        }
+                        <img width="300" class="img-thumbnail" src="@Url.Content("~/Content/Images/" +  image)" alt="Your target">
+                        <br />
+                        @Html.Raw(logic.GetNameFromId(currentUser.CurrentTarget));   
+                     }
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label">Kill report:</label>
+                <div class="col-md-10">
+                    @Html.TextAreaFor(m => m.Comment, new { @class = "form-control", @placeholder="Leave an optional recollection of the assassination!"})
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.PhotoURL, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.ValidationSummary(true)
+                    @Html.TextBoxFor(m => m.ImageUpload, new {  @type = "file", @accept="image/*"})
+                    <p class="help-block">A kill isn't valid unless you upload a picture with your target.</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    @*<input id="submitButton" type="submit" value="Save" class="btn btn-default" />*@
+                    <button id="submitButton" class="btn btn-default" type="submit">
+                        Submit kill
+                    </button>
+                </div>
+            </div>
+            
+            <script>
+                $("#submitButton").click(function (e) {
+                    e.preventDefault();
+                    $(this).prop("disabled", "disabled").width($(this).width()).html("<i class='fa fa-spinner fa-spin'></i>");
+                    $("#KillForm").submit();
+                    setTimeout(function () {
+                        $("#submitButton").removeAttr("disabled").html("Submit kill");
+                    }, 5000);
+                });
+            </script>
+    
+            @Html.HiddenFor(m => m.GameId, new {  Value = currentUser.GameID})
+            @Html.HiddenFor(m => m.Target, new { Value = currentUser.CurrentTarget})
+            @Html.HiddenFor(m => m.User, new { Value = currentUser.Id})
+        }
+    }
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,77 @@
+﻿@using Assassins.Logic
+@model Assassins.Models.Event
+
+@{
+    ViewBag.Title = "Kill Report";
+    LookupLogic logic = new LookupLogic();
+}
+
+<style>
+    span {
+        font-size: 2em;
+    }
+</style>
+
+<div>
+    <h2>@ViewBag.Title</h2>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+        </dt>
+
+        <dd>
+            @Html.Raw(logic.GetNameFromId(Model.user))
+        </dd>
+
+        <dt>
+            <span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span>
+        </dt>
+
+        <dd>
+            @Html.Raw(logic.GetNameFromId(Model.target))
+        </dd>
+
+        <dt>
+            <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.date)
+        </dd>
+
+        <dt>
+            <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
+        </dt>
+
+        <dd>
+            @if(Model.comment != null){
+                @Html.DisplayFor(model => model.comment)
+            }
+            else
+            {
+                @Html.Raw("No comment was provided");
+            }
+        </dd>
+
+        <dt>
+            <span class="glyphicon glyphicon-camera" aria-hidden="true"></span>
+        </dt>
+
+        <dd>
+            @if (Model.photourl != null)
+            {
+                <img class="img-thumbnail img-responsive" src="@Url.Content("~/Content/Images/Kills/" + Model.photourl)" alt="This kill">
+            }
+            else
+            {
+                @Html.Raw("No photo was provided");
+            }
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @*@Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |*@
+    @Html.ActionLink("Back to Index", "Index")
+</p>

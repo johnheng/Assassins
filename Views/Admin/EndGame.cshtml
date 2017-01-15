@@ -1,0 +1,66 @@
+﻿
+@model Assassins.Models.Game
+
+@{
+    ViewBag.Title = "Pause Game";
+}
+<div>
+    <h4>Game</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.StartDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.StartDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EndDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EndDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Current)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Current)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Registration)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Registration)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Active)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Active)
+        </dd>
+
+    </dl>
+</div>
+
+<div>
+    @using (Html.BeginForm("EndGame", "Admin", FormMethod.Post))
+    {
+
+        <div class="form-group">
+            <h2>Are you sure you want to make this game inactive? <p class="lead" style="margin-bottom: 5px">Inactive means that players cannot participate until the game is resumed. Use this to pause the game or end it altogether.</p></h2>
+            @Html.HiddenFor(model => model.Id)
+            @Html.ActionLink("Back to List", "ManageGames", routeValues: null, htmlAttributes: new { @class = "btn btn-default" })
+            <input type="submit" value="Confirm" class="btn btn-warning" />
+
+        </div>
+    }
+</div>

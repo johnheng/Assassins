@@ -1,0 +1,128 @@
+﻿@model IEnumerable<Assassins.Models.AspNetUser>
+
+@{
+    ViewBag.Title = "Player Details";
+    var logic = new Assassins.Logic.LookupLogic();
+}
+
+<p class="text-success">@ViewBag.StatusMessage</p>
+
+<p>
+    @Html.ActionLink("Create New", "Create") | <a href="http://johnheng.net/hengouts/assassins">Assassins Mapper</a>
+</p>
+<textarea rows="3" cols="50" style="margin-bottom:10px;">
+    @foreach (var item in Model.Where(x => x.GameID == logic.GetCurrentGameId()))
+    {
+        @Html.Raw(item.Name + ", " + item.Family + "&#13;&#10;")
+    }
+</textarea>
+<div class="table-responsive">
+    <table class="table">
+        <tr>
+            <th>
+                <span class="fa fa-user"></span>
+            </th>
+            <th>
+
+            </th>
+            <th>
+                <span class="fa fa-crosshairs"></span>
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Kills)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Alive)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GameID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            String userColor;
+            if (item.Family == "Shu")
+            {
+                userColor = "#4CAF50";
+            }
+            else if (item.Family == "Wei")
+            {
+                userColor = "#2196F3";
+            }
+            else
+            {
+                userColor = "#F44336";
+            }
+
+            String targetColor = "";
+            String targetFamily = "";
+            if (item.CurrentTarget != null)
+            {
+                item.CurrentTarget = item.CurrentTarget.Trim();
+            }
+            if (!String.IsNullOrEmpty(item.CurrentTarget) && !item.CurrentTarget.Equals(""))
+            {
+                targetFamily = logic.GetUserFromId(item.CurrentTarget).Family;
+                if (targetFamily == "Shu")
+                {
+                    targetColor = "#4CAF50";
+                }
+                else if (targetFamily == "Wei")
+                {
+                    targetColor = "#2196F3";
+                }
+                else
+                {
+                    targetColor = "#F44336";
+                }
+            }
+            
+
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)<br />
+                    <small style="color:@userColor">@item.Family</small>
+                </td>
+                <td>
+                    <span class="fa fa-arrow-right"></span>
+                </td>
+                <td>
+                    @{
+                        if (!String.IsNullOrEmpty(item.CurrentTarget) && !item.CurrentTarget.Equals(""))
+                        {
+                            @Html.Raw(logic.GetNameFromId(item.CurrentTarget)) <br />
+                                    <small style="color:@targetColor">@targetFamily</small>
+                        }
+                        else
+                        {
+                            @Html.DisplayFor(modelItem => item.CurrentTarget)
+                        }
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Kills)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Alive)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.GameID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", routeValues: new { id = item.Id }, htmlAttributes: new { @id = item.Id, @class = "btn btn-default btn-sm" })
+                    @Html.ActionLink("Delete", "Delete", routeValues: new { id = item.Id }, htmlAttributes: new { @id = item.Id, @class = "btn btn-default btn-sm" })
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>
+

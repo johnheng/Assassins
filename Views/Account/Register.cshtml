@@ -1,0 +1,80 @@
+﻿@model Assassins.Models.RegisterViewModel
+@{
+    ViewBag.Title = "Register";
+}
+
+<h2>@ViewBag.Title.</h2>
+
+@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-input", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <h4>Create a new account.</h4>
+    <hr />
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+    @*<div class="form-group">
+        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Email" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Name, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Name, new { @class = "form-control", @placeholder = "Name" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "*******" })
+            <p class="help-block">Must contain at least one number, one digit, and one special character.</p>
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", @placeholder = "*******" })
+        </div>
+    </div>*@
+    @Html.TextBoxFor(m => m.Email, new { @class = "input-control", @placeholder = "Email", @required = "" })
+    @Html.TextBoxFor(m => m.Name, new { @class = "input-control", @placeholder = "Name", @required = "" })
+    @Html.PasswordFor(m => m.Password, new { @class = "input-control", @placeholder = "Password", @required = "" })
+    @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "input-control", @placeholder = "Confirm Password", @required = "" })
+    @*<div class="form-group">*@
+        @Html.LabelFor(m => m.Family, new { @style="margin-top:25px" @*@class = "col-md-2 control-label"*@ })
+        @*<div class="col-md-10">*@
+            @*@{*@
+                List<SelectListItem> families = new List<SelectListItem>()
+                {
+                    new SelectListItem() { Text = "Shu", Value = "Shu" },
+                    new SelectListItem() { Text = "Wei", Value = "Wei" },
+                    new SelectListItem() { Text = "Wu", Value = "Wu" }
+                };
+                @Html.DropDownListFor(m => m.Family, families,
+                     new { @class = "form-control" });
+            @*}*@
+            <p class="help-block">If you're not part of a family, contact Family chair.</p>
+        @*</div>
+    </div>*@
+    @Html.TextBoxFor(m => m.Description, new { @class = "input-control", @placeholder = "Describe yourself! (optional)" })
+    @*<div class="form-group">
+        @Html.LabelFor(m => m.Description, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Description, new { @class = "form-control", @placeholder = "Add a witty description of yourself."})
+        </div>
+    </div>*@
+    @*<div class="form-group">
+        <div class="col-md-2"></div>
+        <small class="col-md-10">*Required</small>
+    </div>*@
+    <br />
+    @*<div class="input-button">
+        <div class="col-md-offset-2 col-md-10">*@
+            <input type="submit" class="input-button" value="Register" />
+        @*</div>
+    </div>*@
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
